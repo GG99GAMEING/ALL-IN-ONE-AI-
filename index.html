@@ -1,0 +1,331 @@
+<html><head><base href="https://websim.ai/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmic AI Tools Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary-color: #8A2BE2;
+        --secondary-color: #4B0082;
+        --text-color: #E6E6FA;
+        --glow-color: #FFF9C4;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Orbitron', sans-serif;
+        background-color: #000011;
+        color: var(--text-color);
+        overflow-x: hidden;
+    }
+
+    .stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    @keyframes twinkle {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 1; }
+    }
+
+    .star {
+        position: absolute;
+        background-color: #FFF;
+        border-radius: 50%;
+        animation: twinkle 3s infinite;
+    }
+
+    .dashboard {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .tool-button {
+        width: 90%;
+        max-width: 350px;
+        background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        border-radius: 15px;
+        padding: 20px;
+        color: var(--text-color);
+        text-align: left;
+        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .tool-button::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        transform: scale(0);
+        transition: transform 0.5s;
+    }
+
+    .tool-button:hover::before {
+        transform: scale(1);
+    }
+
+    .tool-button:active {
+        transform: scale(0.98);
+    }
+
+    .tool-name {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        text-shadow: 0 0 10px var(--glow-color);
+    }
+
+    .tool-work {
+        font-size: 14px;
+        opacity: 0.8;
+    }
+
+    .add-button {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background: var(--primary-color);
+        color: var(--text-color);
+        border: none;
+        border-radius: 50%;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .add-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(138, 43, 226, 0.7);
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.7);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: linear-gradient(145deg, #1a1a2e, #16213e);
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid var(--primary-color);
+        width: 80%;
+        max-width: 400px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+    }
+
+    .close {
+        color: var(--text-color);
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .close:hover {
+        color: var(--primary-color);
+    }
+
+    input, button {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 8px;
+        background-color: rgba(255,255,255,0.1);
+        color: var(--text-color);
+        font-family: 'Orbitron', sans-serif;
+    }
+
+    input::placeholder {
+        color: rgba(230,230,250,0.5);
+    }
+
+    button {
+        background: var(--primary-color);
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: var(--secondary-color);
+    }
+
+    @keyframes meteor {
+        0% {
+            transform: translate(100%, -100%);
+        }
+        100% {
+            transform: translate(-100%, 100%);
+        }
+    }
+
+    .meteor {
+        position: fixed;
+        width: 2px;
+        height: 2px;
+        background-color: #FFF;
+        opacity: 0;
+        pointer-events: none;
+        animation: meteor 2s linear infinite;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 28px;
+        margin-bottom: 30px;
+        text-shadow: 0 0 15px var(--glow-color);
+    }
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<h1>Cosmic AI Tools</h1>
+<div class="dashboard" id="dashboard">
+    <!-- AI tool buttons will be dynamically added here -->
+</div>
+
+<button class="add-button" id="addButton">+</button>
+
+<div id="addModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Add New AI Tool</h2>
+        <input type="text" id="toolName" placeholder="Tool Name">
+        <input type="text" id="toolLink" placeholder="Tool Link">
+        <input type="text" id="toolWork" placeholder="Tool Work">
+        <button id="saveToolButton">Save Tool</button>
+    </div>
+</div>
+
+<script>
+    const aiTools = [
+        { name: "Text to Audio - Eleven Labs", link: "https://elevenlabs.io/", work: "Convert text to audio" },
+        { name: "All Prompts - ChatGPT", link: "https://chat.openai.com/", work: "Generate and use text-based prompts for various tasks" },
+        { name: "All Codes - ChatGPT", link: "https://chat.openai.com/", work: "Generate, debug, and assist with code writing" },
+        { name: "Script Writing - ChatGPT", link: "https://chat.openai.com/", work: "Assist with script writing for content creation" },
+        { name: "Text-related Work - ChatGPT", link: "https://chat.openai.com/", work: "Handle any text-related tasks such as editing, summarizing, and writing" },
+        { name: "Video to Text - NoteGPT", link: "https://notegpt.io/", work: "Convert video content into text-based notes or summaries" },
+        { name: "Text to Image - Ideogram", link: "https://ideogram.ai/", work: "Generate images from text descriptions" },
+        { name: "Custom Voice - Play.ht", link: "https://play.ht/", work: "Convert text to custom voices using AI" },
+        { name: "Create Apps from Prompts - WebSim", link: "https://websim.ai/", work: "Create apps or websites from simple text prompts using AI" }
+    ];
+
+    const dashboard = document.getElementById('dashboard');
+    const addButton = document.getElementById('addButton');
+    const addModal = document.getElementById('addModal');
+    const closeModal = document.querySelector('.close');
+    const saveToolButton = document.getElementById('saveToolButton');
+    const toolName = document.getElementById('toolName');
+    const toolLink = document.getElementById('toolLink');
+    const toolWork = document.getElementById('toolWork');
+
+    function createToolButton(tool) {
+        const button = document.createElement('button');
+        button.className = 'tool-button';
+        button.innerHTML = `
+            <div class="tool-name">${tool.name}</div>
+            <div class="tool-work">${tool.work}</div>
+        `;
+        button.addEventListener('click', () => {
+            window.open(tool.link, '_blank');
+        });
+        return button;
+    }
+
+    function renderDashboard() {
+        dashboard.innerHTML = '';
+        aiTools.forEach(tool => {
+            dashboard.appendChild(createToolButton(tool));
+        });
+    }
+
+    addButton.onclick = () => {
+        addModal.style.display = "block";
+    }
+
+    closeModal.onclick = () => {
+        addModal.style.display = "none";
+    }
+
+    window.onclick = (event) => {
+        if (event.target == addModal) {
+            addModal.style.display = "none";
+        }
+    }
+
+    saveToolButton.onclick = () => {
+        const newTool = {
+            name: toolName.value,
+            link: toolLink.value,
+            work: toolWork.value
+        };
+        aiTools.push(newTool);
+        renderDashboard();
+        addModal.style.display = "none";
+        toolName.value = '';
+        toolLink.value = '';
+        toolWork.value = '';
+    }
+
+    renderDashboard();
+
+    // Create stars
+    const starsContainer = document.querySelector('.stars');
+    for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = `${Math.random() * 3}px`;
+        star.style.height = star.style.width;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.animationDelay = `${Math.random() * 3}s`;
+        starsContainer.appendChild(star);
+    }
+
+    // Create meteors
+    setInterval(() => {
+        const meteor = document.createElement('div');
+        meteor.className = 'meteor';
+        meteor.style.top = `${Math.random() * 100}%`;
+        meteor.style.left = `${Math.random() * 100}%`;
+        document.body.appendChild(meteor);
+
+        setTimeout(() => {
+            meteor.remove();
+        }, 2000);
+    }, 3000);
+</script>
+</body>
+</html>
